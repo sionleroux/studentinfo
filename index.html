@@ -1,4 +1,33 @@
-<script src="https://unpkg.com/htmx.org@1.9.2"></script>
-<button hx-get="/clicked.html" hx-swap="outerHTML">
-  Click Me
-</button>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Student Enrollment Info</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sscaffold-css@0.1.1/sscaffold.min.css" integrity="sha256-tNrNp6fPTVnhpywTjgNV4jCx6W9d1wuALpwVmAQEYcs=" crossorigin="anonymous">
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+  </head>
+  <body>
+    <main role="main">
+      <section class="about">
+        <h1>Student Enrollment Info</h1>
+        <p>This is an example app to see details on whether a student is enrolled, as well as what musical instrument and which teacher, by entering a student's identifier number.</p>
+        <h2>Student Form</h2>
+        <form id="student-form" action="" method="get" hx-get="/clicked.html" hx-swap="outerHTML" hx-target="#student-results" accept-charset="utf-8">
+          <label for="id">Student ID</label>
+          <input type="text" name="id" id="id" value="" required placeholder="e.g. 1234" pattern="[0-9]{4}" title="A 4-digit number unique to the student" />
+          <p>A 4-digit number unique to the student</p>
+          <button type="submit">Submit</button>
+        </form>
+        <div id="student-results">
+          <p>Enter a student ID above to see whether they got enrolled.</p>
+        </div>
+        <p>Tip: in this demo version the only valid IDs are: 1234, 5678.</p>
+      </section>
+    </main>
+    <footer>
+      <hr>
+      <a href="https://sionleroux.com/" target="_blank">Siôn le Roux</a> 2023 | <a href="https://github.com/sinisterstuf/studentinfo" target="_blank">source code</a>
+    </footer>
+  </body>
+</html>
