@@ -13,7 +13,7 @@
         <h1>Student Enrollment Info</h1>
         <p>This is an example app to see details on whether a student is enrolled, as well as what musical instrument and which teacher, by entering a student's identifier number.</p>
         <h2>Student Form</h2>
-        <form id="student-form" action="" method="get" hx-get="/clicked.html" hx-swap="outerHTML" hx-target="#student-results" accept-charset="utf-8">
+        <form id="student-form" action="" method="get" hx-get="/students" hx-swap="outerHTML" hx-target="#student-results" accept-charset="utf-8">
           <label for="id">Student ID</label>
           <input type="text" name="id" id="id" value="" required placeholder="e.g. 1234" pattern="[0-9]{4}" title="A 4-digit number unique to the student" />
           <p>A 4-digit number unique to the student</p>
