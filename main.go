@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -13,6 +14,30 @@ const DefaultPort = "8080"
 
 //go:embed *.html favicon.png
 var static embed.FS
+
+type Student struct {
+	ID         string
+	Name       string
+	Instrument string
+	Teacher    string
+}
+
+type Students []Student
+
+var students = Students{
+	Student{
+		ID:         "1234",
+		Name:       "Alice",
+		Instrument: "Intermediate Guitar",
+		Teacher:    "Professor Porcupine",
+	},
+	Student{
+		ID:         "4444",
+		Name:       "Bob",
+		Instrument: "Beginner Piano",
+		Teacher:    "Master Manatee",
+	},
+}
 
 func main() {
 	var port = os.Getenv("PORT")
@@ -66,8 +91,25 @@ func main() {
 			return
 		}
 
+		var data *Student
+		for _, s := range students {
+			if s.ID == id {
+				data = &s
+				break
+			}
+		}
+		if data == nil {
+			log.Println("[ERROR] Student not found with ID:", id)
+		}
+
+		var t = template.Must(template.New("student").Parse(string(file)))
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write(file)
+		t.Execute(w, data)
+		if err != nil {
+			log.Println("[ERROR] Failed to execute student template: ", err)
+			http.Error(w, "Error accessing file", http.StatusInternalServerError)
+			return
+		}
 	})
 
 	http.HandleFunc("/favicon.png", func(w http.ResponseWriter, r *http.Request) {
