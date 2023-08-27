@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 )
 
 const DefaultPort = "8080"
@@ -39,6 +40,14 @@ var students = Students{
 	},
 }
 
+func (ss Students) IDs() []string {
+	var ids = make([]string, len(ss))
+	for k, v := range ss {
+		ids[k] = v.ID
+	}
+	return ids
+}
+
 func main() {
 	var port = os.Getenv("PORT")
 	if port == "" {
@@ -62,8 +71,14 @@ func main() {
 			return
 		}
 
+		var t = template.Must(template.New("index").Parse(string(file)))
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write(file)
+		t.Execute(w, strings.Join(students.IDs(), ", "))
+		if err != nil {
+			log.Println("[ERROR] Failed to execute student template: ", err)
+			http.Error(w, "Error accessing file", http.StatusInternalServerError)
+			return
+		}
 	})
 
 	http.HandleFunc("/students", func(w http.ResponseWriter, r *http.Request) {
