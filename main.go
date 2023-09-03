@@ -2,6 +2,8 @@ package main
 
 import (
 	"embed"
+	"encoding/csv"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -21,20 +23,7 @@ type Student struct {
 
 type Students []Student
 
-var students = Students{
-	Student{
-		ID:         "1234",
-		Name:       "Alice",
-		Instrument: "Intermediate Guitar",
-		Teacher:    "Professor Porcupine",
-	},
-	Student{
-		ID:         "4444",
-		Name:       "Bob",
-		Instrument: "Beginner Piano",
-		Teacher:    "Master Manatee",
-	},
-}
+var students Students
 
 func (ss Students) IDs() []string {
 	var ids = make([]string, len(ss))
@@ -51,6 +40,26 @@ func main() {
 		port = DefaultPort
 	}
 	setupHandlers()
+	f, err := os.Open("data.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+	r := csv.NewReader(f)
+	for {
+		record, err := r.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		students = append(students, Student{
+			ID:         record[0],
+			Name:       record[1],
+			Instrument: record[2],
+			Teacher:    record[3],
+		})
+	}
 	log.Println("Server listening")
 	http.ListenAndServe(":"+port, nil)
 }
