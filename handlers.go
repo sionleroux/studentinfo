@@ -29,7 +29,7 @@ func setupHandlers() {
 
 		var t = template.Must(template.New("index").Parse(string(file)))
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		t.Execute(w, strings.Join(students.IDs(), ", "))
+		err = t.Execute(w, strings.Join(students.IDs(), ", "))
 		if err != nil {
 			log.Println("[ERROR] Failed to execute student template: ", err)
 			http.Error(w, "Error accessing file", http.StatusInternalServerError)
@@ -75,7 +75,7 @@ func setupHandlers() {
 
 		var t = template.Must(template.New("student").Parse(string(file)))
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		t.Execute(w, data)
+		err = t.Execute(w, data)
 		if err != nil {
 			log.Println("[ERROR] Failed to execute student template: ", err)
 			http.Error(w, "Error accessing file", http.StatusInternalServerError)
