@@ -6,10 +6,49 @@ import (
 	"testing"
 )
 
-func TestEndpointStudents(t *testing.T) {
-	ts := httptest.NewServer(http.DefaultServeMux)
+func TestBasicRouting(t *testing.T) {
+	mux := http.NewServeMux()
+	ts := httptest.NewServer(mux)
 	defer ts.Close()
-	setupHandlers()
+	setupHandlers(mux)
+
+	for _, tt := range []struct {
+		Path        string
+		StatusCode  int
+		Description string
+	}{
+		{"", http.StatusOK, "empty path"},
+		{"/", http.StatusOK, "root"},
+		{"/asdasd", http.StatusNotFound, "garbage non-existent path"},
+		{"/students", http.StatusBadRequest, "valid path but bad params"},
+		{"/studentss", http.StatusNotFound, "typo path"},
+		{"/students/foo", http.StatusNotFound, "invalid sub-path"},
+	} {
+		r, err := http.NewRequest("GET", ts.URL+tt.Path, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp, err := http.DefaultClient.Do(r)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode != tt.StatusCode {
+			t.Errorf(
+				"Routing expected status code %d for "+
+					"case %s at \"%s\" but got %d",
+				tt.StatusCode,
+				tt.Description, tt.Path, resp.StatusCode,
+			)
+		}
+	}
+}
+
+func TestEndpointStudents(t *testing.T) {
+	mux := http.NewServeMux()
+	ts := httptest.NewServer(mux)
+	defer ts.Close()
+	setupHandlers(mux)
 
 	for _, tt := range []struct {
 		ID          string

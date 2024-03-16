@@ -9,9 +9,9 @@ import (
 	"strings"
 )
 
-func setupHandlers() {
+func setupHandlers(mux *http.ServeMux) {
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Received request to /, serving main page")
 
 		if r.URL.Path != "/" {
@@ -37,7 +37,7 @@ func setupHandlers() {
 		}
 	})
 
-	http.HandleFunc("/students", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/students", func(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Query().Get("id")
 		log.Println("Received request to /students, fetching student data with ID: ", id)
 
@@ -83,7 +83,7 @@ func setupHandlers() {
 		}
 	})
 
-	http.HandleFunc("/favicon.png", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/favicon.png", func(w http.ResponseWriter, r *http.Request) {
 		file, err := static.ReadFile("favicon.png")
 		if err != nil {
 			log.Println("[ERROR] Can't read file:", err)

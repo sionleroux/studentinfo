@@ -39,7 +39,7 @@ func main() {
 		log.Println("PORT not set, defaulting to ", DefaultPort)
 		port = DefaultPort
 	}
-	setupHandlers()
+	setupHandlers(http.DefaultServeMux)
 	f, err := os.Open("data.csv")
 	if err != nil {
 		log.Fatal(err)
