@@ -11,14 +11,8 @@ import (
 
 func setupHandlers(mux *http.ServeMux) {
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/{$}", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Received request to /, serving main page")
-
-		if r.URL.Path != "/" {
-			log.Println("[ERROR] URL doesn't match /, so 404")
-			http.Error(w, "Not found", http.StatusNotFound)
-			return
-		}
 
 		file, err := static.ReadFile("index.html")
 		if err != nil {
